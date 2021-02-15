@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.kisan_udyog.R;
 
@@ -14,7 +15,10 @@ import com.example.kisan_udyog.R;
 public class Review extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
     private Context mcontext = Review.this;
-    private Button ssubmit;
+    private Button ssubmit, stotal;
+    private EditText mtypePrice, mquantity;
+    private String typePrice;
+    private TextView mtotalCost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,9 +30,22 @@ public class Review extends AppCompatActivity {
         String typeName = intent.getStringExtra("typeName");
         mtypeName.setText(typeName);
 
-       EditText mtypePrice = (EditText) findViewById(R.id.sphone);
-        String typePrice = intent.getStringExtra("typePrice");
+        mtotalCost = findViewById(R.id.totalCost);
+        mquantity= findViewById(R.id.quantity);
+        mtypePrice = (EditText) findViewById(R.id.sphone);
+        typePrice = intent.getStringExtra("typePrice");
         mtypePrice.setText(typePrice);
+
+        stotal=(Button) findViewById(R.id.getTotal);
+        stotal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int b= Integer.parseInt(mquantity.getText().toString());
+                int a= Integer.parseInt(typePrice);
+                int total =a*b;
+                mtotalCost.setText(String.valueOf(total));
+            }
+        });
 
         ssubmit=(Button) findViewById(R.id.ssubmit);
         ssubmit.setOnClickListener(new View.OnClickListener() {
@@ -38,7 +55,6 @@ public class Review extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 }
 

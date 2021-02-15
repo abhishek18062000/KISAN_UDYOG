@@ -163,6 +163,8 @@ private void checkIfUsernameExists(final String username) {
                 Toast.makeText(mContext, "Nothing Selected", Toast.LENGTH_SHORT).show();
             }
 
+            Log.d(TAG, "LATITUDE:----------------------------------------------------" + latitude);
+            Log.d(TAG, "LONGITUDE:--------------------------------------------------" + longitude);
             //add new user to the database
             firebaseMethods.addNewUser(email, username,city, latitude, longitude, Long.parseLong(phoneNumber), "",selectedRbText);
 
@@ -263,8 +265,7 @@ private void checkIfUsernameExists(final String username) {
                     int latestLocationIndex = locationResult.getLocations().size() - 1;
                     latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
                     longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
-                    Log.d(TAG, "LATITUDE:----------------------------------------------------" + latitude);
-                    Log.d(TAG, "LONGITUDE:--------------------------------------------------" + longitude);
+
                 }
             }
         }, Looper.getMainLooper());
