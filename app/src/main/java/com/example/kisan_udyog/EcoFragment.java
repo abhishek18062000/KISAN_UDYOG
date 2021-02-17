@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +24,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.tensorflow.lite.Interpreter;
 
@@ -42,31 +45,39 @@ import java.util.List;
 public class EcoFragment extends Fragment{
 
     JSONObject data = null;
+
+    String JSON_STRING = "{\"pomegranate\":{\"phvalue\":\"6.36137446\",\"temp\":\"22.77035608\", \"humidity\":\"91.45498527\", \"rainfall\":\"106.9659201\", \"src\":\"hhtttp....\"},\"Tea\":{\"phvalue\":\"4.571921666\",\"temp\":\"23.49211409\", \"humidity\":\"55.50981676\", \"rainfall\":\"207.7376\", \"src\":\"https://firebasestorage.googleapis.com/v0/b/kisan-udyog-fd4a7.appspot.com/o/tea.png?alt=media&token=24f931da-0253-49b4-b00a-44a2624122c2\"},\"wheat\":{\"phvalue\":\"6.276107098\",\"temp\":\"27.65509604\", \"humidity\":\"53.92601391\", \"rainfall\":\"85.77839497\", \"src\":\"hhtttp....\"},\"muskmelon\":{\"phvalue\":\"6.123802502\",\"temp\":\"29.81196601\", \"humidity\":\"90.36881284\", \"rainfall\":\"22.68766503\", \"src\":\"hhtttp....\"},\"mango\":{\"phvalue\":\"5.699586972\",\"temp\":\"33.56150184\", \"humidity\":\"47.67525434\", \"rainfall\":\"95.85118326\", \"src\":\"hhtttp....\"},\"Jute\":{\"phvalue\":\"6.176860192\",\"temp\":\"24.35564134\", \"humidity\":\"88.80391021\", \"rainfall\":\"169.1168028\", \"src\":\"hhtttp....\"},\"millet\":{\"phvalue\":\"6.484499631\",\"temp\":\"45.38352611\", \"humidity\":\"13.87064234\", \"rainfall\":\"38.19865734\", \"src\":\"hhtttp....\"},\"Adzuki Beans\":{\"phvalue\":\"6.984003028\",\"temp\":\"51.98960952\", \"humidity\":\"54.33930163\", \"rainfall\":\"50.34963363\", \"src\":\"hhtttp....\"},\"Pigeon Peas\":{\"phvalue\":\"5.611510977\",\"temp\":\"31.2192752\", \"humidity\":\"56.46868874\", \"rainfall\":\"129.2028653\", \"src\":\"hhtttp....\"},\"papaya\":{\"phvalue\":\"6.761953186\",\"temp\":\"24.48620746\", \"humidity\":\"92.98254537\", \"rainfall\":\"183.49095\", \"src\":\"hhtttp....\"},\"Ground Nut\":{\"phvalue\":\"6.178774026\",\"temp\":\"31.11185433\", \"humidity\":\"62.36169509\", \"rainfall\":\"118.7825932\", \"src\":\"hhtttp....\"},\"banana\":{\"phvalue\":\"6.190757459\",\"temp\":\"26.33544853\", \"humidity\":\"76.8532006\", \"rainfall\":\"118.6858263\", \"src\":\"hhtttp....\"},\"Coffee\":{\"phvalue\":\"6.516312148\",\"temp\":\"27.56088634\", \"humidity\":\"68.49299897\", \"rainfall\":\"167.4358075\", \"src\":\"hhtttp....\"},\"grapes\":{\"phvalue\":\"6.207600783\",\"temp\":\"10.89875873\", \"humidity\":\"80.01639435\", \"rainfall\":\"68.69420397\", \"src\":\"hhtttp....\"},\"Kidney Beans\":{\"phvalue\":\"5.926676985\",\"temp\":\"16.43340342\", \"humidity\":\"24.24045875\", \"rainfall\":\"140.3717815\", \"src\":\"hhtttp....\"},\"maize\":{\"phvalue\":\"5.749914421\",\"temp\":\"22.61359953\", \"humidity\":\"63.69070564\", \"rainfall\":\"87.75953857\", \"src\":\"hhtttp....\"},\"orange\":{\"phvalue\":\"6.361671475\",\"temp\":\"19.33516809\", \"humidity\":\"91.97978938\", \"rainfall\":\"116.450422\", \"src\":\"hhtttp....\"},\"watermelon\":{\"phvalue\":\"6.429788073\",\"temp\":\"26.80750629\", \"humidity\":\"88.22874955\", \"rainfall\":\"58.79889057\", \"src\":\"hhtttp....\"},\"Tobacco\":{\"phvalue\":\"5.901895741\",\"temp\":\"26.57256307\", \"humidity\":\"62.94940697\", \"rainfall\":\"77.79486786\", \"src\":\"hhtttp....\"},\"Chickpea\":{\"phvalue\":\"6.391173589\",\"temp\":\"18.86805647\", \"humidity\":\"15.65809214\", \"rainfall\":\"88.51048983\", \"src\":\"hhtttp....\"},\"Moth Beans\":{\"phvalue\":\"4.61136408\",\"temp\":\"28.09568993\", \"humidity\":\"60.9835384\", \"rainfall\":\"33.84110759\", \"src\":\"hhtttp....\"},\"Mung Bean\":{\"phvalue\":\"27.43329405\",\"temp\":\"7.18530147\", \"humidity\":\"87.80507732\", \"rainfall\":\"54.73367631\", \"src\":\"hhtttp....\"},\"Coconut\":{\"phvalue\":\"5.860740481\",\"temp\":\"25.84726298\", \"humidity\":\"90.92669463\", \"rainfall\":\"147.8888994\", \"src\":\"hhtttp....\"},\"Peas\":{\"phvalue\":\"6.219809112\",\"temp\":\"18.38433704\", \"humidity\":\"13.627536\", \"rainfall\":\"46.1097405\", \"src\":\"hhtttp....\"},\"rice\":{\"phvalue\":\"6.502985292\",\"temp\":\"20.87974371\", \"humidity\":\"82.00274423\", \"rainfall\":\"202.9355362\", \"src\":\"https://firebasestorage.googleapis.com/v0/b/kisan-udyog-fd4a7.appspot.com/o/rice.png?alt=media&token=704cc1d8-c326-4ef7-8ce2-f45371244bf7\"},\"apple\":{\"phvalue\":\"6.75020529\",\"temp\":\"24.84063998\", \"humidity\":\"60.09116626\", \"rainfall\":\"48.77790371\", \"src\":\"hhtttp....\"},\"Lentil\":{\"phvalue\":\"7.352401887\",\"temp\":\"23.66457347\", \"humidity\":\"81.69105088\", \"rainfall\":\"99.36898373\", \"src\":\"hhtttp....\"},\"Cotton\":{\"phvalue\":\"7.929240731\",\"temp\":\"27.8558593\", \"humidity\":\"76.91493565\", \"rainfall\":\"154.9011463\", \"src\":\"hhtttp....\"},\"Sugarcane\":{\"phvalue\":\"4.634975125\",\"temp\":\"26.64588548\", \"humidity\":\"70.80010239\", \"rainfall\":\"361.1434598\", \"src\":\"hhtttp....\"},\"Rubber\":{\"phvalue\":\"7.397190844\",\"temp\":\"32.47648301\", \"humidity\":\"64.34848735\", \"rainfall\":\"65.820457\", \"src\":\"hhtttp....\"},\"Black gram\":{\"phvalue\":\"3.5\",\"temp\":\"35\", \"humidity\":\"45\", \"rainfall\":\"456\", \"src\":\"hhtttp....\"}}";
     private Context mcontext = getContext();
     private static final String TAG = "EcoFragment";
     private TextView result;
-    private TextView temperature, rainfall, pH, humidity;
+    private TextView temperature, rainfall, pH, humidity, temp2,humid2, pressure;
     Interpreter interpreter;
+    private ImageView srcUrl;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
-    int n;
-    int hu;
+    private int n,hu, p;
+
 
     @Nullable
     @Override
-
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_eco, container, false);
         result=view.findViewById(R.id.outputModel);
-       temperature=view.findViewById(R.id.tempval);
-        rainfall=view.findViewById(R.id.rainfall);
-        //pH=view.findViewById(R.id.pHvalue);
+        temperature=view.findViewById(R.id.tempval);
         humidity=view.findViewById(R.id.humidval);
+        pressure=view.findViewById(R.id.currPressure);
+
+        pH=view.findViewById(R.id.phval);
+        temp2=view.findViewById(R.id.tempReq);
+        humid2=view.findViewById(R.id.humidReq);
+        srcUrl=view.findViewById(R.id.imageView2);
+        rainfall=view.findViewById(R.id.rainfallval);
         try {
             interpreter = new Interpreter(loadModelFile(),null);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+
         requestLocation();
         return view;
     }
@@ -124,14 +135,17 @@ public class EcoFragment extends Fragment{
                     final JSONObject temps = data.getJSONObject("main");
                      n=temps.getInt("temp")-273;
                     hu=temps.getInt("humidity");
+                    p=temps.getInt("pressure");
                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             //Log.d("mine", String.valueOf(n));
                             temperature.setText(String.valueOf(n));
                             humidity.setText(String.valueOf(hu));
-                            String f=doInference(n,hu, 6,452);
+                            pressure.setText(String.valueOf(p));
+                            String f=doInference(n,hu, 6,365);
                             result.setText(f);
+                            jsonParser(f);
                             //Log.d("mine", String.valueOf(hu));
                         }
                     });
@@ -213,4 +227,34 @@ public class EcoFragment extends Fragment{
             }
         }, Looper.getMainLooper());
     }
+
+
+
+    ///================================================================JSON PARSER====================================================
+public void jsonParser(String g){
+    try {
+        JSONObject obj = new JSONObject(JSON_STRING);
+        JSONObject dataset = obj.getJSONObject(g);
+        Log.e(TAG, "ERRORS!"+" "+1);
+        String temps = dataset.getString("temp");
+        Log.e(TAG, "ERRORS!"+" "+2);
+        String rainfalls = dataset.getString("rainfall");
+        Log.e(TAG, "ERRORS!"+" "+3);
+        String imgUrls =  dataset.getString("src");
+        Log.e(TAG, "ERRORS!"+" "+4);
+        String phvals=dataset.getString("phvalue");
+        Log.e(TAG, "ERRORS!"+" "+5);
+        String humiditys =dataset.getString("humidity");
+        // set employee name and salary in TextView's
+       // Log.e(TAG, "GOTCHA"+temp+" "+rainfall);
+
+        Picasso.with(getContext()).load(imgUrls).into(srcUrl);
+        humid2.setText(humiditys);
+        temp2.setText(temps);
+        rainfall.setText(rainfalls);
+        pH.setText(phvals);
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+}
 }

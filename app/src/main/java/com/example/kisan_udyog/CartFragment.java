@@ -33,11 +33,6 @@ public class CartFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_sell_gridview, container, false);
-
-
-
-
-
             // below line is use to initialize our variables.
             coursesGV = view.findViewById(R.id.idGVCourses);
             dataModelArrayList = new ArrayList<>();
