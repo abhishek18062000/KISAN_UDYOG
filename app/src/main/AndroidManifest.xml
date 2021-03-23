@@ -31,6 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".buyer.BuyerProfile"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".buyer.HomeBuyer"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.SellActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".login.LoginActivity"

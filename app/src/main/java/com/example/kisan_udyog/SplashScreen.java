@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kisan_udyog.buyer.Buyer;
+import com.example.kisan_udyog.buyer.HomeBuyer;
 import com.example.kisan_udyog.login.LoginActivity;
 import com.example.kisan_udyog.models.User;
 import com.example.kisan_udyog.models.UserSettings;
@@ -59,7 +60,7 @@ public class SplashScreen extends AppCompatActivity {
                      finish();
                      startActivity(intent);
                  } else if (userType.equals("BUYER")) {
-                     Intent intent = new Intent(SplashScreen.this, Buyer.class);
+                     Intent intent = new Intent(SplashScreen.this, HomeBuyer.class);
                      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                      finish();
                      startActivity(intent);

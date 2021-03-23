@@ -42,23 +42,16 @@ public class HomeFragment extends Fragment{
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         setupFirebaseAuth();
-
-
 
         signouts=view.findViewById(R.id.signouts);
         signouts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mAuth.signOut();
-
                 getActivity().finish();
-
-
             }
         });
-
         return view;
     }
 
