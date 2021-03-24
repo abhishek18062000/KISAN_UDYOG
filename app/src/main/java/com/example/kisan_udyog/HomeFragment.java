@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kisan_udyog.login.LoginActivity;
+import com.example.kisan_udyog.sell.SellerProfile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +35,7 @@ import java.util.stream.IntStream;
 public class HomeFragment extends Fragment{
     private static final String TAG = "HomeFragment";
     private Button signouts;
+    private ImageView image;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListner;
     private TextView result;
@@ -50,6 +53,15 @@ public class HomeFragment extends Fragment{
             public void onClick(View view) {
                 mAuth.signOut();
                 getActivity().finish();
+            }
+        });
+
+        image=view.findViewById(R.id.profilePic);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(getActivity(), SellerProfile.class);
+                startActivity(intent);
             }
         });
         return view;

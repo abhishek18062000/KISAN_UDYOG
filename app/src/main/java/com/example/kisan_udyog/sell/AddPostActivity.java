@@ -1,6 +1,5 @@
 package com.example.kisan_udyog.sell;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -16,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,8 +23,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.kisan_udyog.R;
-import com.example.kisan_udyog.buyer.HomeBuyer;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,21 +39,19 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
-import java.util.List;
 
 public class  AddPostActivity extends AppCompatActivity {
-
+    private static final String TAG = "AddPostActivity";
     EditText title_blog , description_blog ;
     Button upload ;
     ImageView blog_image ;
+    private FirebaseAuth mAuth;
 
     Uri image_uri = null ;
     private static final  int GALLERY_IMAGE_CODE = 100 ;
     private static final  int CAMERA_IMAGE_CODE = 200 ;
     ProgressDialog pd ;
     FirebaseAuth auth ;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +64,6 @@ public class  AddPostActivity extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //call the mehtod here and now asked for permission in manifest
-        //permission();
         title_blog = findViewById(R.id.title_blog);
         description_blog = findViewById(R.id.description_blog);
         upload = findViewById(R.id.upload);
@@ -77,8 +73,6 @@ public class  AddPostActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
 
-
-        //when wil clik on image it asked to choose the image from gallery or camera
         blog_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +80,6 @@ public class  AddPostActivity extends AppCompatActivity {
             }
         });
 
-        //when user click on upload button upload the data to firebase
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,34 +104,83 @@ public class  AddPostActivity extends AppCompatActivity {
 
         pd.setMessage("Publising post");
         pd.show();
-        //here we will upload the data to firebase
-        //firt we will get the time when user upload the post
         final String timeStamp = String.valueOf(System.currentTimeMillis());
-        //here we will set the filepath of our image
-        String filepath = "Posts/"+"post_"+timeStamp;
+        final String filepath = "Posts/"+"post_"+timeStamp;
 
         if (blog_image.getDrawable() != null){
-            //getImage from Image view ;
             Bitmap bitmap = ((BitmapDrawable)blog_image.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG , 100 , baos);
             byte[] data = baos.toByteArray();
 
-            // now we will creat the referense of storage in firebase as we have al ready added the linraries
-            StorageReference reference = FirebaseStorage.getInstance().getReference().child(filepath);
-            reference.putBytes(data)
+            final StorageReference reference = FirebaseStorage.getInstance().getReference().child(filepath);
+            UploadTask uploadTask = reference.putBytes(data);
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                throw task.getException();
+                }
+                    Log.d(TAG,"URL IS  "+ reference.getDownloadUrl());
+
+                return reference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Intent intent = getIntent();
+                        String total = intent.getStringExtra("total");
+                        String quantity = intent.getStringExtra("quantity");
+                        //mtypePrice.setText(typePrice);
+                        Uri downloadUril = task.getResult();
+                        Log.d(TAG,"URLS IS  "+ downloadUril);
+                        String downloadUri=downloadUril.toString();
+                        FirebaseUser user = auth.getCurrentUser();
+                        HashMap<String , Object> hashMap = new HashMap<>();
+                        hashMap.put("uid" , user.getUid());
+                        hashMap.put("pQuantity" , quantity);
+                        hashMap.put("pPrice" , total);
+                        hashMap.put("uEmail" , user.getEmail());
+                        hashMap.put("pId" , timeStamp);
+                        hashMap.put("pTitle" , title);
+                        hashMap.put("pImage" , downloadUri);
+                        hashMap.put("pDescription" , description);
+                        hashMap.put("pTime" ,  timeStamp);
+
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                        ref.child(timeStamp).setValue(hashMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        pd.dismiss();;
+                                        Toast.makeText(AddPostActivity.this, "Post Published", Toast.LENGTH_SHORT).show();
+                                        title_blog.setText("");
+                                        description_blog.setText("");
+                                        blog_image.setImageURI(null);
+                                        image_uri = null ;
+                                    }
+                                });
+                    } else {
+                    }
+                }
+            });
+
+           /* reference.putBytes(data)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            pd.dismiss();
                             Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
                             //here uri.Tast is not success to end the while loop so put not equal to sing !
-                            while (!uriTask.isSuccessful());
+                           // while (!uriTask.isSuccessful());
 
-                            String downloadUri = uriTask.getResult().toString();
+
 
                             if (uriTask.isSuccessful()){
                                 //uri is recieved post is publised to database
-
+                                String downloadUri = uriTask.getResult().toString();
                                 //now we will upload the daata to firebase database for
                                 FirebaseUser user = auth.getCurrentUser();
 
@@ -166,7 +208,7 @@ public class  AddPostActivity extends AppCompatActivity {
                                                 image_uri = null ;
 
                                                 //when post is publised user must go to home activity means main dashboad
-                                                startActivity(new Intent(AddPostActivity.this , HomeBuyer.class));
+                                                startActivity(new Intent(AddPostActivity.this , SellActivity.class));
 
 
                                             }
@@ -188,7 +230,7 @@ public class  AddPostActivity extends AppCompatActivity {
                     Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
-            });
+            }); */
         }
     }
 
@@ -215,7 +257,6 @@ public class  AddPostActivity extends AppCompatActivity {
     }
 
     private void cameraPick() {
-        //here we will do this for camera
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.Images.Media.TITLE , "Temp Pick");
         contentValues.put(MediaStore.Images.Media.TITLE , "Temp desc");
@@ -227,7 +268,6 @@ public class  AddPostActivity extends AppCompatActivity {
 
     private void galleryPick() {
         Intent intent = new Intent(Intent.ACTION_PICK);
-        //this is for all tape of images make sure you didnot make speeling msitake
         intent.setType("image/*");
         startActivityForResult(intent , GALLERY_IMAGE_CODE);
     }

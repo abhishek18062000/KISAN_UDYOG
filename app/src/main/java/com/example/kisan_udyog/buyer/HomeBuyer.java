@@ -41,13 +41,12 @@ public class HomeBuyer extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
-        layoutManager.setReverseLayout(true); // this will load from end and will show latest post first
+        layoutManager.setReverseLayout(true);
 
         recyclerView.setLayoutManager(layoutManager);
 
         postModelList = new ArrayList<>();
 
-        //now we weill retirenve the date from firebase
         loadPosts();
 
     }

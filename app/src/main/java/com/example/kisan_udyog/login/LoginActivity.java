@@ -15,9 +15,8 @@ import android.widget.Toast;
 import com.example.kisan_udyog.MainActivity;
 import com.example.kisan_udyog.R;
 
-import com.example.kisan_udyog.buyer.Buyer;
+import com.example.kisan_udyog.buyer.HomeBuyer;
 import com.example.kisan_udyog.models.User;
-import com.example.kisan_udyog.sell.SellActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Log.d(TAG,"WTFSS"+userType);
                                     if(user.isEmailVerified() ){
                                         if(userType.equals("BUYER")){
-                                            Intent intent = new Intent(LoginActivity.this, Buyer.class);
+                                            Intent intent = new Intent(LoginActivity.this, HomeBuyer.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             finish();
                                             startActivity(intent);

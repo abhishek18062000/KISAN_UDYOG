@@ -51,7 +51,13 @@ public class Review extends AppCompatActivity {
         ssubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Review.this,UploadSell.class);
+                Intent intent = new Intent(Review.this,AddPostActivity.class);
+                int b= Integer.parseInt(mquantity.getText().toString());
+                int a= Integer.parseInt(typePrice);
+                int total =a*b;
+                String s=Integer.toString(total);
+                intent.putExtra("total", s);
+                intent.putExtra("quantity", mquantity.getText().toString());
                 startActivity(intent);
             }
         });

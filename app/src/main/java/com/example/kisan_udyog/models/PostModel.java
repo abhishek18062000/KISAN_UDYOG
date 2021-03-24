@@ -2,15 +2,33 @@ package com.example.kisan_udyog.models;
 
 public class PostModel {
 
-    String pImage, pTitle, pDescription;
+    String pImage, pTitle, pDescription,pQuantity,pPrice;
 
     public PostModel() {
     }
 
-    public PostModel(String pImage, String pTitle, String pDescription) {
+    public PostModel(String pImage, String pTitle, String pDescription, String pQuantity, String pPrice) {
         this.pImage = pImage;
         this.pTitle = pTitle;
         this.pDescription = pDescription;
+        this.pQuantity = pQuantity;
+        this.pPrice = pPrice;
+    }
+
+    public String getpQuantity() {
+        return pQuantity;
+    }
+
+    public void setpQuantity(String pQuantity) {
+        this.pQuantity = pQuantity;
+    }
+
+    public String getpPrice() {
+        return pPrice;
+    }
+
+    public void setpPrice(String pPrice) {
+        this.pPrice = pPrice;
     }
 
     public String getpImage() {
