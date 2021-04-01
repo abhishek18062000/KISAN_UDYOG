@@ -48,14 +48,11 @@
         <activity android:name=".sell.UploadSell"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.AddPostActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.SellerProfile"
-            android:screenOrientation="portrait">
-        </activity>
-
-
-
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".sell.ChatBot">
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

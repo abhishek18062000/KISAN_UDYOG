@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kisan_Udyog</string>
+    <string name="app_name">Kisan Udyog</string>
     <string name="home">HOME</string>
     <string name="Wheat">Wheat</string>
     <string name="dbname_user">users</string>

@@ -20,17 +20,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kisan_udyog.R;
+import com.example.kisan_udyog.models.User;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -39,38 +44,67 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 public class  AddPostActivity extends AppCompatActivity {
     private static final String TAG = "AddPostActivity";
     EditText title_blog , description_blog ;
     Button upload ;
-    ImageView blog_image ;
-    private FirebaseAuth mAuth;
-
+    ImageView blog_image,profImages ;
+    TextView mquant,mpricetot;
+    String latitude,longitude,total,quantity,username,profileImages;
     Uri image_uri = null ;
     private static final  int GALLERY_IMAGE_CODE = 100 ;
     private static final  int CAMERA_IMAGE_CODE = 200 ;
     ProgressDialog pd ;
     FirebaseAuth auth ;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
 
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Add Post");
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().hide();
 
         title_blog = findViewById(R.id.title_blog);
         description_blog = findViewById(R.id.description_blog);
         upload = findViewById(R.id.upload);
         blog_image = findViewById(R.id.post_image_blog);
+        mquant=findViewById(R.id.quant);
+        mpricetot=findViewById(R.id.total);
+        profImages=findViewById(R.id.profilePic);
+        Intent intent = getIntent();
+        total = intent.getStringExtra("total");
+        quantity = intent.getStringExtra("quantity");
+        mquant.setText(quantity);
+        mpricetot.setText(total);
+
+
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("users");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User post = dataSnapshot.child(user.getUid()).getValue(User.class);
+                latitude= String.valueOf(post.getLatitude());
+                longitude= String.valueOf(post.getLongitude());
+                username=String.valueOf(post.getUsername());
+                profileImages=String.valueOf(post.getProfile_photo());
+                Log.d(TAG,"USERNAME ISS "+ username);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+
+            }
+        });
 
         pd = new ProgressDialog(this);
-        auth = FirebaseAuth.getInstance();
+
 
 
         blog_image.setOnClickListener(new View.OnClickListener() {
@@ -130,18 +164,17 @@ public class  AddPostActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
-                        Intent intent = getIntent();
-                        String total = intent.getStringExtra("total");
-                        String quantity = intent.getStringExtra("quantity");
-                        //mtypePrice.setText(typePrice);
                         Uri downloadUril = task.getResult();
-                        Log.d(TAG,"URLS IS  "+ downloadUril);
+                        //Log.d(TAG,"URLS IS  "+ downloadUril);
                         String downloadUri=downloadUril.toString();
-                        FirebaseUser user = auth.getCurrentUser();
                         HashMap<String , Object> hashMap = new HashMap<>();
+                        hashMap.put("profile_pic",profileImages);
                         hashMap.put("uid" , user.getUid());
                         hashMap.put("pQuantity" , quantity);
                         hashMap.put("pPrice" , total);
+                        hashMap.put("pLatitude" , latitude);
+                        hashMap.put("pUsername" , username);
+                        hashMap.put("pLongitude" , longitude);
                         hashMap.put("uEmail" , user.getEmail());
                         hashMap.put("pId" , timeStamp);
                         hashMap.put("pTitle" , title);
@@ -319,4 +352,7 @@ public class  AddPostActivity extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+
 }

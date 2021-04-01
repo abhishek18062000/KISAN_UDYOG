@@ -44,11 +44,7 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-             /*   if(userType.equals(null)){
-                    Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
-                    startActivity(intent);
-                    SplashScreen.this.finish();
-                }*/
+
              try {
                  if (userType.equals("FARMER")) {
                      Intent intent = new Intent(SplashScreen.this, MainActivity.class);

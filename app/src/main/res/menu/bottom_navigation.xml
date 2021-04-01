@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/nav_account"
-        android:icon="@drawable/ic_query_foreground"
-        android:title="Chat"/>
+        android:icon="@drawable/ic_account_user_foreground"
+        android:title="Profile"/>
 
 </menu>

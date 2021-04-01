@@ -38,11 +38,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyHolder> {
         String title = postModelList.get(position).getpTitle();
         String description = postModelList.get(position).getpDescription();
         String image = postModelList.get(position).getpImage();
+        String price=postModelList.get(position).getpPrice();
+        String quantity =postModelList.get(position).getpQuantity();
+        String username=postModelList.get(position).getpUsername();
+        String profilePhoto=postModelList.get(position).getProfile_pic();
 
         holder.postTitle.setText(title);
         holder.postDescription.setText(description);
+        holder.postQuantity.setText(quantity+" kgs.");
+        holder.postPrice.setText(price+ " Rs.");
+        holder.postUsername.setText(username);
 
         Glide.with(context).load(image).into(holder.postImage);
+        Glide.with(context).load(profilePhoto).into(holder.profilePic);
         //now we will add library to load image
     }
 
@@ -53,14 +61,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyHolder> {
 
     class MyHolder extends RecyclerView.ViewHolder{
 
-        ImageView postImage;
-        TextView postTitle , postDescription;
+        ImageView postImage,profilePic;
+        TextView postTitle , postDescription,postPrice,postQuantity,postUsername;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
             postImage = itemView.findViewById(R.id.postImage);
             postTitle = itemView.findViewById(R.id.postTitle);
             postDescription = itemView.findViewById(R.id.postDescription);
+            postPrice=itemView.findViewById(R.id.postPrice);
+            postQuantity=itemView.findViewById(R.id.postQuantity);
+            postUsername=itemView.findViewById(R.id.username);
+            profilePic=itemView.findViewById(R.id.profilePic);
 
         }
     }
