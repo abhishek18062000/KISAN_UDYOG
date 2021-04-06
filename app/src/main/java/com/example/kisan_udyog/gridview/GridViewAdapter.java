@@ -47,13 +47,13 @@ public class GridViewAdapter extends ArrayAdapter<DataModel> {
         final DataModel dataModel = getItem(position);
 
         // initializing our UI components of list view item.
-        TextView nameTV = listitemView.findViewById(R.id.idTVtext);
+      //  TextView nameTV = listitemView.findViewById(R.id.idTVtext);
         ImageView courseIV = listitemView.findViewById(R.id.idIVimage);
 
         // after initializing our items we are
         // setting data to our view.
         // below line is use to set data to our text view.
-        nameTV.setText(dataModel.getName());
+       // nameTV.setText(dataModel.getName());
 
         // in below line we are using Picasso to load image
         // from URL in our Image VIew.

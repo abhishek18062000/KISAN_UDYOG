@@ -51,7 +51,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.SellerProfile"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".sell.ChatBot">
+        <activity android:name=".sell.ChatBot"
             android:screenOrientation="portrait"></activity>
     </application>
 

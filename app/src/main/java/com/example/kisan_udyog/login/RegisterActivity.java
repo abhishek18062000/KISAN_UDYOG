@@ -1,11 +1,18 @@
 package com.example.kisan_udyog.login;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -27,6 +35,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -38,6 +47,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -54,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
     private FirebaseDatabase mFirebaseDatabase;
+    Uri image_uri = null;
 
     private String email, username, password,repassword,city;
     private String phoneNumber;
@@ -61,9 +76,13 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mEmail, mPassword, mName, mRePassword, mCity, mPhoneNumber;
     private Button mRegister;
     private String append="";
+    private ImageView profView;
 
     RadioGroup radioGroup;
     RadioButton selectedRadioButton;
+
+    private static final  int GALLERY_IMAGE_CODE = 100 ;
+    private static final  int CAMERA_IMAGE_CODE = 200 ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +103,68 @@ public class RegisterActivity extends AppCompatActivity {
         initWidgets();
         setupFirebaseAuth();
         init();
+        profView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imagePickDialog();
+            }
+        });
+
+
+
     }
+
+    private void imagePickDialog() {
+        //here 0 is for camera and 1 is for gallery so please do it like me
+        String[] options = {"Camera" , "Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose image from");
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0){
+                    cameraPick();
+                }
+                if (which == 1){
+                    galleryPick();
+
+                }
+            }
+        });
+
+        builder.create().show();
+    }
+
+    private void cameraPick() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.Images.Media.TITLE , "Temp Pick");
+        contentValues.put(MediaStore.Images.Media.TITLE , "Temp desc");
+        image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI , contentValues);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT , image_uri);
+        startActivityForResult(intent , CAMERA_IMAGE_CODE);
+    }
+
+    private void galleryPick() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent , GALLERY_IMAGE_CODE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK){
+            if (requestCode == GALLERY_IMAGE_CODE){
+                image_uri = data.getData();
+                profView.setImageURI(image_uri);
+            }
+            if (requestCode == CAMERA_IMAGE_CODE){
+                profView.setImageURI(image_uri);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 //-----------------------------------------WIDGETS INITATION----------------------------------------------------
 
     private void init(){
@@ -122,6 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
         mPhoneNumber=(EditText) findViewById(R.id.phoneNumber);
         mRegister=(Button) findViewById(R.id.register);
         radioGroup = findViewById(R.id.radioGroup);
+        profView=findViewById(R.id.profView);
     }
 
 
@@ -162,15 +243,45 @@ private void checkIfUsernameExists(final String username) {
             } else {
                 Toast.makeText(mContext, "Nothing Selected", Toast.LENGTH_SHORT).show();
             }
+            Uri downloadUril;
 
-            Log.d(TAG, "LATITUDE:----------------------------------------------------" + latitude);
-            Log.d(TAG, "LONGITUDE:--------------------------------------------------" + longitude);
-            //add new user to the database
-            firebaseMethods.addNewUser(email, username,city, latitude, longitude, Long.parseLong(phoneNumber), "",selectedRbText);
 
-            Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+            final String timeStamp = String.valueOf(System.currentTimeMillis());
+            final String filepath = "ProfilePic/"+"profile_"+timeStamp;
+            if (profView.getDrawable() != null){
+                Bitmap bitmap = ((BitmapDrawable)profView.getDrawable()).getBitmap();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG , 100 , baos);
+                byte[] data = baos.toByteArray();
 
-            mAuth.signOut();
+                final StorageReference reference = FirebaseStorage.getInstance().getReference().child(filepath);
+                UploadTask uploadTask = reference.putBytes(data);
+
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        Log.d(TAG,"URL IS  "+ reference.getDownloadUrl());
+
+                        return reference.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            Uri downloadUril = task.getResult();
+                            String downloadUri=downloadUril.toString();
+                            firebaseMethods.addNewUser(email, username,city, latitude, longitude, Long.parseLong(phoneNumber), downloadUri,selectedRbText);
+
+                            Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+
+                            mAuth.signOut();
+                        }}});}
+
+
+
         }
 
         @Override

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,7 +43,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
-import java.util.Map;
 
 public class  AddPostActivity extends AppCompatActivity {
     private static final String TAG = "AddPostActivity";
@@ -104,8 +102,6 @@ public class  AddPostActivity extends AppCompatActivity {
         });
 
         pd = new ProgressDialog(this);
-
-
 
         blog_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,71 +195,6 @@ public class  AddPostActivity extends AppCompatActivity {
                     }
                 }
             });
-
-           /* reference.putBytes(data)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            pd.dismiss();
-                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                            //here uri.Tast is not success to end the while loop so put not equal to sing !
-                           // while (!uriTask.isSuccessful());
-
-
-
-                            if (uriTask.isSuccessful()){
-                                //uri is recieved post is publised to database
-                                String downloadUri = uriTask.getResult().toString();
-                                //now we will upload the daata to firebase database for
-                                FirebaseUser user = auth.getCurrentUser();
-
-                                HashMap<String , Object> hashMap = new HashMap<>();
-
-                                hashMap.put("uid" , user.getUid());
-                                hashMap.put("uEmail" , user.getEmail());
-                                hashMap.put("pId" , timeStamp);
-                                hashMap.put("pTitle" , title);
-                                hashMap.put("pImage" , downloadUri);
-                                hashMap.put("pDescription" , description);
-                                hashMap.put("pTime" ,  timeStamp);
-
-                                //now we will pust the data to firebase database
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
-                                ref.child(timeStamp).setValue(hashMap)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                pd.dismiss();;
-                                                Toast.makeText(AddPostActivity.this, "Post Published", Toast.LENGTH_SHORT).show();
-                                                title_blog.setText("");
-                                                description_blog.setText("");
-                                                blog_image.setImageURI(null);
-                                                image_uri = null ;
-
-                                                //when post is publised user must go to home activity means main dashboad
-                                                startActivity(new Intent(AddPostActivity.this , SellActivity.class));
-
-
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        pd.dismiss();
-                                        Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-
-                            }
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(AddPostActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    pd.dismiss();
-                }
-            }); */
         }
     }
 
@@ -305,39 +236,7 @@ public class  AddPostActivity extends AppCompatActivity {
         startActivityForResult(intent , GALLERY_IMAGE_CODE);
     }
 
- /*   private void permission(){
 
-        Dexter.withContext(this)
-                .withPermission(Manifest.permission.CAMERA)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken toke) {
-                        toke.continuePermissionRequest();
-                    }
-                }).check();
-        //hold alt key and press enter to import the library
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ).withListener(new MultiplePermissionsListener() {
-            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
-
-            }
-            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... }
-        }).check();
-    } */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
