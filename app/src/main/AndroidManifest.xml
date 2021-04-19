@@ -43,16 +43,20 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".login.RegisterActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".sell.Review"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".sell.UploadSell"
-            android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.AddPostActivity"
+            android:theme="@style/AppTheme.PopMe"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.SellerProfile"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".sell.ChatBot"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".sell.AddProfilePost"
+            android:theme="@style/AppTheme.PopMe"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".buyer.BuyNow"
+            android:theme="@style/AppTheme.PopMe"
+            android:screenOrientation="portrait"></activity>
+
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.kisan_udyog.MainActivity;
 import com.example.kisan_udyog.R;
 import com.example.kisan_udyog.login.LoginActivity;
 import com.example.kisan_udyog.models.PostModel;
@@ -88,8 +89,11 @@ public class HomeBuyer extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.action_logout) {
+            Intent intent = new Intent(HomeBuyer.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
             auth.signOut();
-            startActivity(new Intent(HomeBuyer.this, LoginActivity.class));
+            startActivity(intent);
         }
         if (item.getItemId() == R.id.action_add_post) {
             startActivity(new Intent(HomeBuyer.this, BuyerProfile.class));

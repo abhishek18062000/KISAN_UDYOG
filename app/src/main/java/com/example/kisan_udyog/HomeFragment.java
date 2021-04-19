@@ -2,8 +2,6 @@ package com.example.kisan_udyog;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,11 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kisan_udyog.login.LoginActivity;
-import com.example.kisan_udyog.models.PostModel;
+import com.example.kisan_udyog.models.FarmerPost;
 import com.example.kisan_udyog.models.User;
+import com.example.kisan_udyog.sell.AddProfilePost;
 import com.example.kisan_udyog.sell.ChatBot;
 import com.example.kisan_udyog.sell.PostAdapterSeller;
-import com.example.kisan_udyog.sell.SellerProfile;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,19 +30,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class HomeFragment extends Fragment{
     private static final String TAG = "HomeFragment";
-    private Button signouts;
-    private ImageView image,chatBots;
+    private ImageView chatBots,addPost;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListner;
     FirebaseAuth auth ;
@@ -53,8 +47,8 @@ public class HomeFragment extends Fragment{
     private TextView profileName;
 
     RecyclerView recyclerView;
-    PostAdapterSeller postAdapter;
-    List<PostModel> postModelList;
+    PostAdapterSeller postAdapterseller;
+    List<FarmerPost> farmPostList;
     @Nullable
     @Override
 
@@ -67,6 +61,7 @@ public class HomeFragment extends Fragment{
         recyclerView = view.findViewById(R.id.recycler_view2);
         chatBots=view.findViewById(R.id.chatBot);
         profileName=view.findViewById(R.id.profName);
+        addPost=view.findViewById(R.id.addPost1);
         //image=view.findViewById(R.id.nav_account);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -83,7 +78,6 @@ public class HomeFragment extends Fragment{
                   //      .load(profilepic).into(image);
 
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 System.out.println("The read failed: " + databaseError.getCode());
@@ -99,16 +93,16 @@ public class HomeFragment extends Fragment{
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
-        postModelList = new ArrayList<>();
+        farmPostList = new ArrayList<>();
         loadPosts();
-    /*    signouts=view.findViewById(R.id.signouts);
-        signouts.setOnClickListener(new View.OnClickListener() {
+
+        addPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
-                getActivity().finish();
+                Intent intent= new Intent(getActivity(), AddProfilePost.class);
+                startActivity(intent);
             }
-        }); */
+        });
 
 
         chatBots.setOnClickListener(new View.OnClickListener() {
@@ -125,16 +119,16 @@ public class HomeFragment extends Fragment{
 
     private void loadPosts() {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Farmer_Posts");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postModelList.clear();
+                farmPostList.clear();
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    PostModel postModel = ds.getValue(PostModel.class);
-                    postModelList.add(postModel);
-                    postAdapter = new PostAdapterSeller(getContext() , postModelList);
-                    recyclerView.setAdapter(postAdapter);
+                    FarmerPost farmPostModel = ds.getValue(FarmerPost.class);
+                    farmPostList.add(farmPostModel);
+                    postAdapterseller = new PostAdapterSeller(getContext() , farmPostList);
+                    recyclerView.setAdapter(postAdapterseller);
                 }
             }
 

@@ -21,33 +21,43 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/profilePic"
                     android:layout_width="45dp"
                     android:layout_height="35dp"
-                    android:id="@+id/profilePic"
-                    android:src="@drawable/farmersss"
-                    android:layout_marginTop="9dp"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"/>
+                    android:layout_marginLeft="-2dp"
+                    android:layout_marginTop="7dp"
+                    android:src="@drawable/farmersss" />
 
                 <TextView
-                    android:layout_width="211dp"
                     android:id="@+id/profName"
+                    android:layout_width="190dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="11dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="6dp"
                     android:layout_toEndOf="@+id/profilePic"
                     android:fontFamily="cursive"
-                    android:textStyle="bold"
-                    android:textSize="25dp"></TextView>
+                    android:textSize="25dp"
+                    android:textStyle="bold"></TextView>
 
                 <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="31dp"
+                    android:id="@+id/addPost1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
-                    android:id="@+id/chatBot"
                     android:layout_toEndOf="@+id/profName"
+                    android:src="@drawable/ic_plus_foreground" />
+
+                <ImageView
+                    android:id="@+id/chatBot"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_toEndOf="@+id/addPost1"
                     android:src="@drawable/ic_chat_foreground"></ImageView>
 
 

@@ -2,12 +2,12 @@ package com.example.kisan_udyog.models;
 
 public class PostModel {
 
-    String pImage, pTitle, pDescription,pQuantity,pPrice,pUsername,profile_pic;
+    String pImage, pTitle, pDescription,pQuantity,pPrice,pUsername,profile_pic,uid,status,pTime,phoneNumber,city,pId;
 
     public PostModel() {
     }
 
-    public PostModel(String pImage, String pTitle, String pDescription, String pQuantity, String pPrice, String pUsername, String profile_pic) {
+    public PostModel(String pImage, String pTitle, String pDescription, String pQuantity, String pPrice, String pUsername, String profile_pic, String uid, String status, String pTime, String phoneNumber, String city, String pId) {
         this.pImage = pImage;
         this.pTitle = pTitle;
         this.pDescription = pDescription;
@@ -15,6 +15,60 @@ public class PostModel {
         this.pPrice = pPrice;
         this.pUsername = pUsername;
         this.profile_pic = profile_pic;
+        this.uid = uid;
+        this.status = status;
+        this.pTime = pTime;
+        this.phoneNumber = phoneNumber;
+        this.city = city;
+        this.pId = pId;
+    }
+
+    public String getpId() {
+        return pId;
+    }
+
+    public void setpId(String pId) {
+        this.pId = pId;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getpTime() {
+        return pTime;
+    }
+
+    public void setpTime(String pTime) {
+        this.pTime = pTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getpQuantity() {

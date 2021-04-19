@@ -22,29 +22,22 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SplashScreen extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
-    private Context mcontext = SplashScreen.this;
     private FirebaseAuth mAuth;
     DatabaseReference reference, rootRef;
-    private FirebaseAuth.AuthStateListener mAuthListner;
-    private UserSettings mUserSettings;
     private String userType;
     private String userID;
-    private Button mrel1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blank);
         getSupportActionBar().hide();
-        //setupFirebaseAuth();
         userType=setups();
-       //Log.d(TAG,"WTFSS"+userType);
 
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
              try {
                  if (userType.equals("FARMER")) {
                      Intent intent = new Intent(SplashScreen.this, MainActivity.class);
@@ -71,61 +64,17 @@ public class SplashScreen extends AppCompatActivity {
 
 
 
-
- /*   private void checkCurrentUser(FirebaseUser user){
-        if (user == null) {
-
-                    Intent intent = new Intent(mcontext, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    SplashScreen.this.finish();
-                    startActivity(intent);
-        }
-
-    }
-
-
-    private void setupFirebaseAuth(){
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListner= new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                checkCurrentUser(user);
-                if(user!=null){
-                    Log.d(TAG,"USER logged in"+ user.getUid());
-                    //userType=setups();
-                }
-                else{
-                    Log.d(TAG,"USER not logged in");
-                }
-            }
-        };
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListner);
-        checkCurrentUser(mAuth.getCurrentUser());
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        mAuth.removeAuthStateListener(mAuthListner);
-    }
-*/
-
     private String setups(){
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
-            Log.d(TAG,"WTF"+userID);
             rootRef = FirebaseDatabase.getInstance().getReference();
             reference = rootRef.child("users").child(userID);
             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userType = dataSnapshot.getValue(User.class).getRole();
-                    Toast.makeText(SplashScreen.this, "LOGGED AS"+ userType, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SplashScreen.this, "LOGGED AS "+ userType, Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {

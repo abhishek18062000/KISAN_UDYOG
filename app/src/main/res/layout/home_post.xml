@@ -21,7 +21,6 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:id="@+id/profilePic"
-                android:src="@drawable/abhi"
                 android:layout_margin="10dp"/>
 
             <TextView
@@ -91,7 +90,6 @@
                 android:id="@+id/buyNow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BUY NOW!"
                 android:textColor="#DC143C"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

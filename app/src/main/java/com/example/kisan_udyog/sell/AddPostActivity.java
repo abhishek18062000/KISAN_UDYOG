@@ -1,5 +1,6 @@
 package com.example.kisan_udyog.sell;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -14,8 +15,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,15 +46,17 @@ import com.google.firebase.storage.UploadTask;
 
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
-public class  AddPostActivity extends AppCompatActivity {
+public class  AddPostActivity extends Activity {
     private static final String TAG = "AddPostActivity";
     EditText title_blog , description_blog ;
     Button upload ;
-    ImageView blog_image,profImages ;
+    ImageView blog_image,profImages,close ;
     TextView mquant,mpricetot;
-    String latitude,longitude,total,quantity,username,profileImages;
+    String latitude,longitude,type,total,quantity,username,profileImages,phoneNumber,city;
     Uri image_uri = null ;
     private static final  int GALLERY_IMAGE_CODE = 100 ;
     private static final  int CAMERA_IMAGE_CODE = 200 ;
@@ -65,20 +71,42 @@ public class  AddPostActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
-        getSupportActionBar().hide();
+        DisplayMetrics dm =new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+        int width=dm.widthPixels;
+        int height=dm.heightPixels;
+        getWindow().setLayout((int)(width*.9),(int)(height*.78));
+
+        WindowManager.LayoutParams params =getWindow().getAttributes();
+        params.gravity= Gravity.CENTER;
+        params.x=0;
+        params.y=-20;
+        params.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        params.dimAmount = 0.5f;
+        getWindow().setAttributes(params);
+
+        close=findViewById(R.id.close1);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         title_blog = findViewById(R.id.title_blog);
         description_blog = findViewById(R.id.description_blog);
         upload = findViewById(R.id.upload);
         blog_image = findViewById(R.id.post_image_blog);
+        profImages=findViewById(R.id.profilePic);
+
         mquant=findViewById(R.id.quant);
         mpricetot=findViewById(R.id.total);
-        profImages=findViewById(R.id.profilePic);
         Intent intent = getIntent();
-        total = intent.getStringExtra("total");
-        quantity = intent.getStringExtra("quantity");
+        type = intent.getStringExtra("typeName");
+        quantity = intent.getStringExtra("typePrice");
+        title_blog.setText(type);
         mquant.setText(quantity);
-        mpricetot.setText(total);
+
 
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -90,6 +118,9 @@ public class  AddPostActivity extends AppCompatActivity {
                 latitude= String.valueOf(post.getLatitude());
                 longitude= String.valueOf(post.getLongitude());
                 username=String.valueOf(post.getUsername());
+                phoneNumber=String.valueOf(post.getPhone_number());
+                city=String.valueOf(post.getCity());
+
                 profileImages=String.valueOf(post.getProfile_photo());
                 Log.d(TAG,"USERNAME ISS "+ username);
             }
@@ -115,7 +146,7 @@ public class  AddPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String title = title_blog.getText().toString();
                 String description = description_blog.getText().toString();
-
+                total=String.valueOf(Integer.parseInt(quantity)*Integer.parseInt(mpricetot.getText().toString()));
                 if (TextUtils.isEmpty(title)){
                     title_blog.setError("Title is required");
                 }
@@ -135,6 +166,7 @@ public class  AddPostActivity extends AppCompatActivity {
         pd.setMessage("Publising post");
         pd.show();
         final String timeStamp = String.valueOf(System.currentTimeMillis());
+        final String timeStamps = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
         final String filepath = "Posts/"+"post_"+timeStamp;
 
         if (blog_image.getDrawable() != null){
@@ -173,17 +205,21 @@ public class  AddPostActivity extends AppCompatActivity {
                         hashMap.put("pLongitude" , longitude);
                         hashMap.put("uEmail" , user.getEmail());
                         hashMap.put("pId" , timeStamp);
+                        hashMap.put("city" , city);
                         hashMap.put("pTitle" , title);
+                        hashMap.put("phoneNumber" , phoneNumber);
                         hashMap.put("pImage" , downloadUri);
                         hashMap.put("pDescription" , description);
-                        hashMap.put("pTime" ,  timeStamp);
+                        hashMap.put("pTime" ,  timeStamps);
+                        hashMap.put("status", "Not Sold");
 
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                         ref.child(timeStamp).setValue(hashMap)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        pd.dismiss();;
+                                        pd.dismiss();
+                                        finish();
                                         Toast.makeText(AddPostActivity.this, "Post Published", Toast.LENGTH_SHORT).show();
                                         title_blog.setText("");
                                         description_blog.setText("");

@@ -2,6 +2,7 @@ package com.example.kisan_udyog.login;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,7 +76,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String selectedRbText;
     private EditText mEmail, mPassword, mName, mRePassword, mCity, mPhoneNumber;
     private Button mRegister;
-    private String append="";
     private ImageView profView;
 
     RadioGroup radioGroup;
@@ -88,6 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        getSupportActionBar().hide();
+
         mContext=RegisterActivity.this;
         firebaseMethods=new FirebaseMethods(mContext);
 
@@ -109,9 +111,6 @@ public class RegisterActivity extends AppCompatActivity {
                 imagePickDialog();
             }
         });
-
-
-
     }
 
     private void imagePickDialog() {
@@ -174,19 +173,58 @@ public class RegisterActivity extends AppCompatActivity {
                 email = mEmail.getText().toString();
                 username = mName.getText().toString();
                 password = mPassword.getText().toString();
-                repassword = mRePassword.getText().toString();
                 city = mCity.getText().toString();
                 phoneNumber = mPhoneNumber.getText().toString();
 
-                if(checkInputs(email, username,password,repassword,city,phoneNumber)){
+                if(checkInputs(email, username,password,city,phoneNumber)){
                     firebaseMethods.registerNewEmail(email,password);
+
+                    int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
+                    if (selectedRadioButtonId != -1) {
+                        selectedRadioButton = findViewById(selectedRadioButtonId);
+                        selectedRbText = selectedRadioButton.getText().toString();
+                    } else {
+                        Toast.makeText(mContext, "Nothing Selected", Toast.LENGTH_SHORT).show();
+                    }
+                    final String timeStamp = String.valueOf(System.currentTimeMillis());
+                    final String filepath = "ProfilePic/"+"profile_"+timeStamp;
+                    if (profView.getDrawable() != null){
+                        Bitmap bitmap = ((BitmapDrawable)profView.getDrawable()).getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG , 100 , baos);
+                        byte[] data = baos.toByteArray();
+
+                        final StorageReference reference = FirebaseStorage.getInstance().getReference().child(filepath);
+                        UploadTask uploadTask = reference.putBytes(data);
+
+                        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if (!task.isSuccessful()) {
+                                    throw task.getException();
+                                }
+                                return reference.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    Uri downloadUril = task.getResult();
+                                    String downloadUri=downloadUril.toString();
+                                    firebaseMethods.addNewUser(email, username,city, latitude, longitude, Long.parseLong(phoneNumber), downloadUri,selectedRbText);
+                                    Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+                                    mAuth.signOut();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
     }
 
-    private Boolean checkInputs(String email, String username, String password, String repassword, String city,String phoneNumber){
-        if(email.equals("") || username.equals("") || password.equals("") || repassword.equals("") || city.equals("") || phoneNumber.equals("")) {
+    private Boolean checkInputs(String email, String username, String password, String city,String phoneNumber){
+        if(email.equals("") || username.equals("") || password.equals("") || city.equals("") || phoneNumber.equals("")) {
             Toast.makeText(mContext, "Fill all the fields", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -194,12 +232,11 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initWidgets(){
-        mEmail=(EditText) findViewById(R.id.regemail);
-        mPassword=(EditText) findViewById(R.id.regpassword);
-        mRePassword=(EditText) findViewById(R.id.reEnterPassword);
-        mName=(EditText) findViewById(R.id.fullName);
-        mCity=(EditText) findViewById(R.id.city);
-        mPhoneNumber=(EditText) findViewById(R.id.phoneNumber);
+        mEmail=(EditText) findViewById(R.id.email);
+        mPassword=(EditText) findViewById(R.id.password);
+        mName=(EditText) findViewById(R.id.name);
+        mCity=(EditText) findViewById(R.id.citi);
+        mPhoneNumber=(EditText) findViewById(R.id.phone);
         mRegister=(Button) findViewById(R.id.register);
         radioGroup = findViewById(R.id.radioGroup);
         profView=findViewById(R.id.profView);
@@ -209,90 +246,6 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 //-----------------------------------------FIREBASE STUFF----------------------------------------------------
-private void checkIfUsernameExists(final String username) {
-    Log.d(TAG, "checkIfUsernameExists: Checking if  " + username + " already exists.");
-
-    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-    Query query = reference
-            .child(getString(R.string.dbname_user))
-            .orderByChild(getString(R.string.field_username))
-            .equalTo(username);
-    query.addListenerForSingleValueEvent(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-
-            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                if (singleSnapshot.exists()) {
-                    Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH: " + singleSnapshot.getValue(User.class).getUsername());
-                    append = myRef.push().getKey().substring(3, 10);
-                    Log.d(TAG, "onDataChange: username already exists. Appending random string to name: " + append);
-                }
-            }
-
-            String mUsername = "";
-            mUsername = username + append;
-
-
-
-            //input from radio button
-            int selectedRadioButtonId = radioGroup.getCheckedRadioButtonId();
-            if (selectedRadioButtonId != -1) {
-                selectedRadioButton = findViewById(selectedRadioButtonId);
-                selectedRbText = selectedRadioButton.getText().toString();
-                Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mContext, "Nothing Selected", Toast.LENGTH_SHORT).show();
-            }
-            Uri downloadUril;
-
-
-            final String timeStamp = String.valueOf(System.currentTimeMillis());
-            final String filepath = "ProfilePic/"+"profile_"+timeStamp;
-            if (profView.getDrawable() != null){
-                Bitmap bitmap = ((BitmapDrawable)profView.getDrawable()).getBitmap();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG , 100 , baos);
-                byte[] data = baos.toByteArray();
-
-                final StorageReference reference = FirebaseStorage.getInstance().getReference().child(filepath);
-                UploadTask uploadTask = reference.putBytes(data);
-
-                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-                        Log.d(TAG,"URL IS  "+ reference.getDownloadUrl());
-
-                        return reference.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUril = task.getResult();
-                            String downloadUri=downloadUril.toString();
-                            firebaseMethods.addNewUser(email, username,city, latitude, longitude, Long.parseLong(phoneNumber), downloadUri,selectedRbText);
-
-                            Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
-
-                            mAuth.signOut();
-                        }}});}
-
-
-
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    });
-}
-
-
-
 
     private void setupFirebaseAuth(){
         mAuth = FirebaseAuth.getInstance();
@@ -303,12 +256,9 @@ private void checkIfUsernameExists(final String username) {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user!=null){
-                    Log.d(TAG,"USER logged in"+ user.getUid());
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            checkIfUsernameExists(username);
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -317,7 +267,6 @@ private void checkIfUsernameExists(final String username) {
                     finish();
                 }
                 else{
-                    Log.d(TAG,"USER not logged in");
                 }
             }
         };
@@ -358,13 +307,6 @@ private void checkIfUsernameExists(final String username) {
         locationRequest.setFastestInterval(3000);
         locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         LocationServices.getFusedLocationProviderClient(RegisterActivity.this).requestLocationUpdates(locationRequest, new LocationCallback() {

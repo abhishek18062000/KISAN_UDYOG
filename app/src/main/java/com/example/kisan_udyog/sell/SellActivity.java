@@ -32,17 +32,12 @@ public class SellActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
 
-       /* EditText receiver_msg = (EditText) findViewById(R.id.sprice);
-        Intent intent = getIntent();
-        String str = intent.getStringExtra("ghj");
-        receiver_msg.setText(str);
-*/
        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                String[] arr =splitString(mobileArray.get(i));
                Log.d("SellActivity", "INEGER"+arr[0]);
-               Intent intent = new Intent(SellActivity.this,Review.class);
+               Intent intent = new Intent(SellActivity.this,AddPostActivity.class);
                intent.putExtra("typeName", arr[0]);
                intent.putExtra("typePrice", arr[1]);
                startActivity(intent);
@@ -52,14 +47,10 @@ public class SellActivity extends AppCompatActivity {
 
 
     private String[] splitString(String s){
-
         String typeName=s;
         String typePrice=s;
         typeName = typeName.replaceAll("[0-9]","");
         typePrice=typePrice.replaceAll("[A-Za-z\\s]","");
-       // Log.d("SellActivity", "INEGER"+typeName);
-        //Log.d("SellActivity", "INEGER"+typePrice);
-
         return new String[] {typeName, typePrice};
     }
 }

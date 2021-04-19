@@ -9,12 +9,12 @@
     <item
         android:id="@+id/nav_shop"
         android:icon="@drawable/ic_baseline_shopping_cart_24"
-        android:title="Cart"/>
+        android:title="Sell"/>
 
     <item
         android:id="@+id/nav_eco"
         android:icon="@drawable/ic_baseline_eco_24"
-        android:title="Eco"/>
+        android:title="Suggestion"/>
 
     <item
         android:id="@+id/nav_account"

@@ -1,143 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:padding="16dp"
+    android:scrollbarThumbVertical="@null"
+    tools:context=".login.RegisterActivity">
 
-    <ImageView
-        android:id="@+id/profView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/abhi"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/city"
-        android:layout_width="199dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="City"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumber" />
-
-    <EditText
-        android:id="@+id/fullName"
-        android:layout_width="199dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="28dp"
-        android:ems="10"
-        android:hint="Full Name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profView" />
-
-    <EditText
-        android:id="@+id/regemail"
-        android:layout_width="199dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fullName" />
-
-    <EditText
-        android:id="@+id/regpassword"
-        android:layout_width="199dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regemail" />
-
-    <EditText
-        android:id="@+id/reEnterPassword"
-        android:layout_width="199dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Re-enter Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regpassword" />
-
-    <EditText
-        android:id="@+id/phoneNumber"
-        android:layout_width="199dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Phone Number"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reEnterPassword" />
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textView6"
-        android:layout_marginTop="4dp"
-        android:orientation="vertical"
-        android:padding="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city"
-        tools:ignore="NotSibling">
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
 
-        <RadioButton
-            android:id="@+id/farmer"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="15dp"
-            android:text="FARMER" />
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/buyer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingRight="15dp"
-            android:text="BUYER" />
-    </RadioGroup>
+            <ImageView
+                android:id="@+id/profView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_photo_foreground"
+                android:layout_marginLeft="130dp"/>
 
-    <Button
-        android:id="@+id/register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="REGISTER"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/nameError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
 
-    <TextView
-        android:id="@+id/signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Already Registered! LOGIN.."
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register"
-        app:layout_constraintVertical_bias="0.123" />
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Name"
+                    android:inputType="textNoSuggestions"
+                    android:maxLines="1"
+                    android:paddingStart="5dp"
+                    android:singleLine="true"/>
 
-</android.support.constraint.ConstraintLayout>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/emailError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:paddingStart="5dp"
+                    android:singleLine="true"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/phoneError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Phone Number"
+                    android:maxLength="12"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:paddingStart="5dp"
+                    android:singleLine="true"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/passError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:paddingStart="5dp"
+                    android:singleLine="true"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                android:layout_marginTop="5dp">
+
+                <EditText
+                    android:id="@+id/citi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="City"
+                    android:maxLength="12"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingStart="5dp"
+                    android:singleLine="true"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="70dp"
+                app:layout_constraintTop_toBottomOf="@+id/city"
+                tools:ignore="NotSibling">
+
+                <RadioButton
+                    android:id="@+id/farmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="15dp"
+                    android:text="FARMER" />
+
+                <RadioButton
+                    android:id="@+id/buyer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="15dp"
+                    android:text="BUYER" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/register"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/button_gradient"
+                android:text="REGISTER"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="Already register! LOGIN"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</ScrollView>
+
+
+
+

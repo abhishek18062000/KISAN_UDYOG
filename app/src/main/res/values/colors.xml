@@ -14,4 +14,7 @@
 
     <color name="bg_bubble_self">#62caa6</color>
     <color name="bg_bubble_watbot">#ecf0f1</color>
+
+    <color name="colorAccents">#ffff8800</color>
+    <color name="zircon">#e0e6e4</color>
 </resources>

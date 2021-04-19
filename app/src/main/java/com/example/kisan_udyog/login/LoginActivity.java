@@ -38,8 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
 
-
-    DatabaseReference reference, rootRef;
+    private DatabaseReference rootRef;
     private String userType;
     private String userID;
 
@@ -49,11 +48,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.acttivity_login);
         getSupportActionBar().hide();
 
-        mEmail=(EditText) findViewById(R.id.loginEmail);
-        mPassword=(EditText) findViewById(R.id.loginPassword);
+        mEmail=findViewById(R.id.email);
+        mPassword=findViewById(R.id.password);
         mContext = LoginActivity.this;
 
-        setupFirebaseAuth();
+        mAuth = FirebaseAuth.getInstance();
+        //setupFirebaseAuth();
         init();
 
     }
@@ -70,15 +70,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void init(){
-        Button btnLogin = (Button) findViewById(R.id.logins);
+        Button btnLogin = findViewById(R.id.login);
         btnLogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 String email= mEmail.getText().toString();
                 String password= mPassword.getText().toString();
-
                 if(isStringNull(email) && isStringNull(password)){
-                    Toast.makeText(mContext, "you must full all fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "you must fill all fields", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -88,12 +87,10 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             userType=setups();
                             if(!task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "unSUCCESSFUL",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "UNSUCCESSFUL",Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 try {
-
-                                    Log.d(TAG,"WTFSS"+userType);
                                     if(user.isEmailVerified() ){
                                         if(userType.equals("BUYER")){
                                             Intent intent = new Intent(LoginActivity.this, HomeBuyer.class);
@@ -126,12 +123,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-        mRegisterHere = (TextView) findViewById(R.id.register_heres);
+        mRegisterHere = findViewById(R.id.register);
         mRegisterHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(LoginActivity.this, RegisterActivity.class);
-                //finish();
                 startActivity(intent);
             }
         });
@@ -139,33 +135,26 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private String  setups(){
-        mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
-
-            Log.d(TAG,"WTF"+userID);
-
-            rootRef = FirebaseDatabase.getInstance().getReference();
-            reference = rootRef.child("users").child(userID);
-            Log.d(TAG,"WTF"+reference);
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            rootRef = FirebaseDatabase.getInstance().getReference().child("users").child(userID);
+            rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     userType = dataSnapshot.getValue(User.class).getRole();
-                    Toast.makeText(LoginActivity.this, "LOGGED AS"+ userType, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "LOGGED AS "+ userType, Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-
         }
         return userType;
     }
 
 
 
-    private void setupFirebaseAuth(){
+  /*  private void setupFirebaseAuth(){
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase= FirebaseDatabase.getInstance();
         myRef=mFirebaseDatabase.getReference();
@@ -174,17 +163,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user!=null){
-                    Log.d(TAG,"USER logged in"+ user.getUid());
                 }
                 else{
-                    Log.d(TAG,"USER not logged in");
                 }
-
             }
         };
-
     }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -194,6 +178,5 @@ public class LoginActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         mAuth.removeAuthStateListener(mAuthListener);
-    }
-
+    }*/
 }
