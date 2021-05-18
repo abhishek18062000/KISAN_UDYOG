@@ -2,6 +2,7 @@ package com.example.kisan_udyog;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.os.AsyncTask;
@@ -16,10 +17,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kisan_udyog.sell.CustomPrediction;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -55,6 +58,7 @@ public class EcoFragment extends Fragment{
     private ImageView srcUrl;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
     private int n,hu, p;
+    private Button custPrediction;
 
 
     @Nullable
@@ -65,6 +69,7 @@ public class EcoFragment extends Fragment{
         temperature=view.findViewById(R.id.tempval);
         humidity=view.findViewById(R.id.humidval);
         pressure=view.findViewById(R.id.currPressure);
+        custPrediction=view.findViewById(R.id.custPre);
 
         pH=view.findViewById(R.id.phval);
         temp2=view.findViewById(R.id.tempReq);
@@ -79,6 +84,14 @@ public class EcoFragment extends Fragment{
         }
 
         requestLocation();
+        custPrediction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CustomPrediction.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -153,7 +166,6 @@ public class EcoFragment extends Fragment{
                 }
                 catch(Exception ex)
                 {
-                    Log.e("App", "yourDataTask", ex);
                     Log.e("App", "yourDataTask", ex);
                     return null;
                 }
@@ -246,8 +258,7 @@ public void jsonParser(String g){
         String phvals=dataset.getString("phvalue");
         Log.e(TAG, "ERRORS!"+" "+5);
         String humiditys =dataset.getString("humidity");
-        // set employee name and salary in TextView's
-       // Log.e(TAG, "GOTCHA"+temp+" "+rainfall);
+
 
         Picasso.with(getContext()).load(imgUrls).into(srcUrl);
         humid2.setText(humiditys);

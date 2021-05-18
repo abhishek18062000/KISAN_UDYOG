@@ -2,12 +2,12 @@ package com.example.kisan_udyog.models;
 
 public class PostModel {
 
-    String pImage, pTitle, pDescription,pQuantity,pPrice,pUsername,profile_pic,uid,status,pTime,phoneNumber,city,pId;
+    String pImage, pTitle, pDescription,pQuantity,pPrice,pUsername,profile_pic,uid,status,pTime,phoneNumber,city,pId,bId;
 
     public PostModel() {
     }
 
-    public PostModel(String pImage, String pTitle, String pDescription, String pQuantity, String pPrice, String pUsername, String profile_pic, String uid, String status, String pTime, String phoneNumber, String city, String pId) {
+    public PostModel(String pImage, String pTitle, String pDescription, String pQuantity, String pPrice, String pUsername, String profile_pic, String uid, String status, String pTime, String phoneNumber, String city, String pId, String bId) {
         this.pImage = pImage;
         this.pTitle = pTitle;
         this.pDescription = pDescription;
@@ -21,10 +21,19 @@ public class PostModel {
         this.phoneNumber = phoneNumber;
         this.city = city;
         this.pId = pId;
+        this.bId = bId;
     }
 
     public String getpId() {
         return pId;
+    }
+
+    public String getbId() {
+        return bId;
+    }
+
+    public void setbId(String bId) {
+        this.bId = bId;
     }
 
     public void setpId(String pId) {

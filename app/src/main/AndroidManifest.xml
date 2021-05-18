@@ -56,6 +56,9 @@
         <activity android:name=".buyer.BuyNow"
             android:theme="@style/AppTheme.PopMe"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".sell.CustomPrediction"
+            android:theme="@style/AppTheme.PopMe"
+            android:screenOrientation="portrait"></activity>
 
     </application>
 

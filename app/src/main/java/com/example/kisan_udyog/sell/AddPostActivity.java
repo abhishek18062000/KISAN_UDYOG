@@ -212,6 +212,7 @@ public class  AddPostActivity extends Activity {
                         hashMap.put("pDescription" , description);
                         hashMap.put("pTime" ,  timeStamps);
                         hashMap.put("status", "Not Sold");
+                        hashMap.put("bId", "");
 
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                         ref.child(timeStamp).setValue(hashMap)

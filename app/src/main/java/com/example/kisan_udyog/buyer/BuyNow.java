@@ -91,11 +91,14 @@ public class BuyNow extends AppCompatActivity {
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    FirebaseDatabase.getInstance().getReference().child("review").child(pid)
-                            .child(firebaseUser.getUid()).setValue(true);
+              //      FirebaseDatabase.getInstance().getReference().child("review").child(pid)
+               //             .child(firebaseUser.getUid()).setValue(true);
 
                 FirebaseDatabase.getInstance().getReference().child("Posts").child(pid)
                         .child("status").setValue("For Review");
+
+                FirebaseDatabase.getInstance().getReference().child("Posts").child(pid)
+                        .child("bId").setValue(firebaseUser.getUid());
 
                 finish();
             }

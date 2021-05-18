@@ -76,6 +76,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyHolder> {
         Glide.with(context).load(profilePhoto).into(holder.profilePic);
 
         isForReview(postModel.getpId(), holder.buynow);
+        holder.buynow.setText("BUY NOW");
+        holder.buynow.setTextColor(Color.RED);
+        holder.buynow.setTag("buynow");
         holder.buynow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,21 +126,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.MyHolder> {
     private void isForReview(final String postid, final TextView textView){
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("review").child(postid);
-        reference.addValueEventListener(new ValueEventListener() {
+                .child("Posts").child(postid).child("status");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(firebaseUser.getUid()).exists()){
+                String status=dataSnapshot.getValue(String.class);
+                Log.d(TAG,"gggg "+status);
+                if(status.equals("For Review")){
                     textView.setText("FOR REVIEW");
                     textView.setTextColor(Color.BLUE);
                     textView.setTag("review");
                     textView.setEnabled(false);
-                } else{
-                    textView.setText("BUY NOW");
-                    textView.setTextColor(Color.RED);
-                    textView.setTag("buynow");
+                }
+                else if(status.equals("Sold")){
+                    textView.setText("SOLD");
+                    textView.setTextColor(Color.GREEN);
+                    textView.setTag("sold");
+                    textView.setEnabled(false);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
