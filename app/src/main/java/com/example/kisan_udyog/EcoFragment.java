@@ -129,7 +129,7 @@ public class EcoFragment extends Fragment{
         new AsyncTask<Void, Void, JSONObject>() {
             @Override
             protected JSONObject doInBackground(Void... voids) {
-                String str="http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+longi+"&appid=d94cf62848d1ba15929b240e90183338";
+                String str="https://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+longi+"&appid=d94cf62848d1ba15929b240e90183338";
                 Log.d(TAG, "helllo"+str);
                 URLConnection urlConn = null;
                 BufferedReader bufferedReader = null;
